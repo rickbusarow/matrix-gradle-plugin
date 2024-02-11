@@ -1,0 +1,94 @@
+public abstract class com/rickbusarow/matrix/BaseYamlMatrixTask : org/gradle/api/DefaultTask {
+	public fun <init> (Lorg/gradle/api/model/ObjectFactory;)V
+	protected final fun createStyledOutput ()Lorg/gradle/internal/logging/text/StyledTextOutput;
+	public abstract fun getEndTagProperty ()Lorg/gradle/api/provider/Property;
+	protected final fun getMatrixSectionRegex ()Lkotlin/text/Regex;
+	public abstract fun getStartTagProperty ()Lorg/gradle/api/provider/Property;
+	public final fun getYamlFile ()Lorg/gradle/api/file/RegularFileProperty;
+	protected final fun getYamlSections (Ljava/lang/String;)Lkotlin/sequences/Sequence;
+	protected final fun requireCiFile ()Ljava/io/File;
+}
+
+public final class com/rickbusarow/matrix/TestVersions {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/rickbusarow/matrix/TestVersions;
+	public static synthetic fun copy$default (Lcom/rickbusarow/matrix/TestVersions;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/rickbusarow/matrix/TestVersions;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAgp ()Ljava/lang/String;
+	public final fun getAnvil ()Ljava/lang/String;
+	public final fun getGradle ()Ljava/lang/String;
+	public final fun getKotlin ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public class com/rickbusarow/matrix/Versions : java/io/Serializable {
+	public static final field Companion Lcom/rickbusarow/matrix/Versions$Companion;
+	public fun <init> (Lorg/gradle/api/Project;)V
+	public final fun getAgpList ()Lorg/gradle/api/provider/ListProperty;
+	public final fun getAnvilList ()Lorg/gradle/api/provider/ListProperty;
+	public final fun getGradleList ()Lorg/gradle/api/provider/ListProperty;
+	public final fun getKotlinList ()Lorg/gradle/api/provider/ListProperty;
+}
+
+public final class com/rickbusarow/matrix/Versions$Companion {
+}
+
+public final class com/rickbusarow/matrix/VersionsMatrix {
+	public fun <init> (Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+	public final fun getAgpList ()Ljava/util/List;
+	public final fun getAllValid ()Ljava/util/List;
+	public final fun getAnvilList ()Ljava/util/List;
+	public final fun getGradleList ()Ljava/util/List;
+	public final fun getKotlinList ()Ljava/util/List;
+}
+
+public final class com/rickbusarow/matrix/VersionsMatrix$Exclusion {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/rickbusarow/matrix/VersionsMatrix$Exclusion;
+	public static synthetic fun copy$default (Lcom/rickbusarow/matrix/VersionsMatrix$Exclusion;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/rickbusarow/matrix/VersionsMatrix$Exclusion;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAgp ()Ljava/lang/String;
+	public final fun getAnvil ()Ljava/lang/String;
+	public final fun getGradle ()Ljava/lang/String;
+	public final fun getKotlin ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public class com/rickbusarow/matrix/VersionsMatrixExtension : java/io/Serializable {
+	public fun <init> (Lorg/gradle/api/Project;)V
+	public final fun getVersions ()Lcom/rickbusarow/matrix/Versions;
+	public final fun versionsMatrix (Lorg/gradle/api/Project;Ljava/lang/String;Ljava/lang/String;)V
+}
+
+public abstract class com/rickbusarow/matrix/VersionsMatrixYamlCheckTask : com/rickbusarow/matrix/BaseYamlMatrixTask, org/gradle/api/tasks/VerificationTask {
+	public fun <init> (Lorg/gradle/api/model/ObjectFactory;)V
+	public final fun check ()V
+}
+
+public final class com/rickbusarow/matrix/VersionsMatrixYamlCheckTaskKt {
+	public static final fun diffString (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+}
+
+public abstract class com/rickbusarow/matrix/VersionsMatrixYamlGenerateTask : com/rickbusarow/matrix/BaseYamlMatrixTask {
+	public fun <init> (Lorg/gradle/api/model/ObjectFactory;)V
+	public final fun execute ()V
+}
+
+public abstract class com/rickbusarow/matrix/VersionsMatrixYamlPlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+

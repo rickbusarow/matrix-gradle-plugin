@@ -1,0 +1,21 @@
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Log Files
+*.log
+
+# IntelliJ
+*.iml
+.idea/*
+
+# keep .idea sub-directories
+!/.idea/codeStyles/
+!/.idea/copyright/
+!/.idea/runConfigurations/
+!/.idea/inspectionProfiles/
+!.idea/detekt.xml
+!.idea/ktlint-plugin.xml
