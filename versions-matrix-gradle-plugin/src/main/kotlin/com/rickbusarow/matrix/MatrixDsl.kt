@@ -36,109 +36,96 @@ import kotlin.LazyThreadSafetyMode.NONE
 @DslMarker
 public annotation class MatrixDsl
 
-public abstract class CanaryExtension @Inject constructor(
+@MatrixDsl
+public abstract class MatricesExtension @Inject constructor(
   objects: ObjectFactory
 ) {
 
-  public val matrices: NamedDomainObjectContainer<Matrix> = objects
-    .domainObjectContainer(Matrix::class.java)
+  public val matrices: NamedDomainObjectContainer<MatrixExtension> = objects
+    .domainObjectContainer(MatrixExtension::class.java)
 
   public fun matrix(
     name: String,
-    action: Action<Matrix>
-  ): NamedDomainObjectProvider<Matrix> = matrices.register(name, action)
+    action: Action<MatrixExtension>
+  ): NamedDomainObjectProvider<MatrixExtension> = matrices.register(name, action)
 }
 
 @MatrixDsl
-public abstract class Matrix @Inject constructor(
+public abstract class MatrixExtension @Inject constructor(
   @get:Input
   public val name: String,
   private val providerFactory: ProviderFactory
 ) : Serializable {
 
   @get:Input
-  public abstract val paramGroups: NamedDomainObjectContainer<ParamGroup>
+  public abstract val paramGroups: NamedDomainObjectContainer<NamedParamGroup>
 
   @get:Input
-  public abstract val exclusions: ListProperty<Exclusion>
+  public abstract val exclusions: ListProperty<MatrixExclusion>
+
+  internal fun matrix(): Matrix = Matrix(
+    name = name,
+    paramGroups = paramGroups.toList(),
+    exclusions = exclusions.get()
+  )
 
   public fun paramGroup(
     name: String,
     versions: Collection<String>
-  ): NamedDomainObjectProvider<ParamGroup> {
+  ): NamedDomainObjectProvider<NamedParamGroup> {
     return paramGroups.register(name) { it.paramValues.set(versions) }
   }
 
   public fun paramGroup(
     name: String,
     versions: Provider<Collection<String>>
-  ): NamedDomainObjectProvider<ParamGroup> {
+  ): NamedDomainObjectProvider<NamedParamGroup> {
     return paramGroups.register(name) { it.paramValues.set(versions) }
   }
 
   public fun paramGroup(
     name: String,
     versions: Callable<Collection<String>>
-  ): NamedDomainObjectProvider<ParamGroup> {
+  ): NamedDomainObjectProvider<NamedParamGroup> {
     return paramGroup(name, providerFactory.provider(versions))
   }
 
-  public fun exclude(listNameToValue: Collection<Pair<Provider<ParamGroup>, String>>) {
+  public fun exclude(listNameToValue: Collection<Pair<NamedParamGroup, String>>) {
 
     exclusions.add(
       providerFactory.provider {
-
-        Exclusion(
-          listNameToValue.mapToSet { (listProvider, value) ->
-            NamedParamValue(paramNames = listProvider.get().paramNames, value = value)
-          }
-        )
+        MatrixExclusion(listNameToValue.mapToSet { (group, value) ->
+          NamedParamValue(paramNames = group.paramNames, value = value)
+        })
       }
     )
   }
 
-  internal fun cartesian(): List<VersionSet> {
-    return paramGroups.toList()
-      .fold(listOf(emptySet<NamedParamValue>())) { acc, list ->
+  private fun List<ParamCombination>.requireNotEmpty(): List<ParamCombination> {
+    return apply {
+      require(isNotEmpty()) {
+        "There are no valid version combinations to be made from the provided arguments."
+      }
+    }
+  }
 
-        acc.flatMap { existingList ->
-          list.values().mapToSet { existingList + it }
+  private fun List<MatrixExclusion>.requireNoDuplicates(): List<MatrixExclusion> {
+    return also { exclusions ->
+      require(exclusions.toSet().size == exclusions.size) {
+        val duplicates = exclusions.filter { target ->
+          exclusions.filter { it == target }.size > 1
         }
+          .distinct()
+
+        "There are duplicate (identical) exclusions (this list shows one of each type):\n" +
+          duplicates.joinToString("\n\t")
       }
-      .map { VersionSet(it) }
-      .filterNot { set -> exclusions.get().any { it.excludes(set) } }
-  }
-
-  private fun List<VersionSet>.requireNotEmpty() = apply {
-    require(isNotEmpty()) {
-      "There are no valid version combinations to be made from the provided arguments."
     }
-  }
-
-  private fun List<Exclusion>.requireNoDuplicates() = also { exclusions ->
-    require(exclusions.toSet().size == exclusions.size) {
-      val duplicates = exclusions.filter { target ->
-        exclusions.filter { it == target }.size > 1
-      }
-        .distinct()
-
-      "There are duplicate (identical) exclusions (this list shows one of each type):\n" +
-        duplicates.joinToString("\n\t")
-    }
-  }
-}
-
-private fun ParamGroup.values(): List<NamedParamValue> {
-  return paramValues.get().map { value ->
-    NamedParamValue(
-      paramNames = paramNames,
-      value = value
-    )
   }
 }
 
 @Poko
-public class VersionSet(public val list: Set<NamedParamValue>) : Serializable {
+public class ParamCombination(public val list: Set<NamedParamValue>) : Serializable {
   init {
     require(list.distinctBy { it.paramNames }.size == list.size) {
 
@@ -152,13 +139,14 @@ public class VersionSet(public val list: Set<NamedParamValue>) : Serializable {
 }
 
 @Poko
-public class ParamNames(
+public class ParamNames constructor(
   public val name: String,
   public val yamlName: String = name,
-  public val aliasName: String = name
+  public val buildConfigName: String = name,
+  public val catalogAliasName: String = name
 ) : Serializable {
   override fun toString(): String =
-    "ParamId(name: $name | yamlName: $yamlName | aliasName: $aliasName)"
+    "ParamId(name: $name | yamlName: $yamlName | buildConfigName: $buildConfigName | catalogAliasName: $catalogAliasName)"
 }
 
 public interface HasParamNames {
@@ -173,7 +161,7 @@ public class NamedParamValue(
   override fun toString(): String = "$paramNames: $value"
 }
 
-public abstract class ParamGroup @Inject constructor(
+public abstract class NamedParamGroup @Inject constructor(
   @get:Input public val name: String,
   objects: ObjectFactory
 ) : Serializable, HasParamNames {
@@ -182,14 +170,18 @@ public abstract class ParamGroup @Inject constructor(
   public val yamlName: Property<String> = objects.property<String>(name)
 
   @get:Input
-  public val aliasName: Property<String> = objects.property<String>(name)
+  public val buildConfigName: Property<String> = objects.property<String>(name)
+
+  @get:Input
+  public val catalogAliasName: Property<String> = objects.property<String>(name)
 
   @get:Internal
   override val paramNames: ParamNames by lazy(NONE) {
     ParamNames(
       name = name,
       yamlName = yamlName.getAndFinalize(),
-      aliasName = aliasName.getAndFinalize()
+      buildConfigName = buildConfigName.getAndFinalize(),
+      catalogAliasName = catalogAliasName.getAndFinalize()
     )
   }
 
@@ -207,10 +199,10 @@ internal fun <T> Property<T>.getAndFinalize(): T {
 }
 
 @Poko
-public class Exclusion(
+public class MatrixExclusion(
   @get:Input public val values: Set<NamedParamValue>
 ) : Serializable {
-  internal fun excludes(set: VersionSet): Boolean {
+  internal fun excludes(set: ParamCombination): Boolean {
     return values.all { set.list.contains(it) }
   }
 }

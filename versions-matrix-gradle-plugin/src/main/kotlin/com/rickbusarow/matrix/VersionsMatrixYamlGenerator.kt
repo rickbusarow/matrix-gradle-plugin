@@ -17,7 +17,7 @@ package com.rickbusarow.matrix
 
 internal class VersionsMatrixYamlGenerator {
 
-  fun generate(matrix: Matrix, indentSize: Int): String {
+  fun generate(matrix: Matrix , indentSize: Int): String {
     var currentIndent = " ".repeat(indentSize)
 
     fun StringBuilder.indent(content: StringBuilder.() -> Unit) {
@@ -39,13 +39,13 @@ internal class VersionsMatrixYamlGenerator {
           line("${list.yamlName}: ${list.paramValues.get().asYamlList()}")
         }
 
-        if (matrix.exclusions.get().isEmpty()) {
+        if (matrix.exclusions .isEmpty()) {
           line("exclude: [ ]")
         } else {
           line("exclude:")
 
           indent {
-            for (exclude in matrix.exclusions.get()) {
+            for (exclude in matrix.exclusions ) {
               for (line in exclude.asYamlLines()) {
                 line(line)
               }
@@ -59,7 +59,7 @@ internal class VersionsMatrixYamlGenerator {
 
   private fun List<String>.asYamlList() = joinToString(", ", "[ ", " ]") { it }
 
-  private fun Exclusion.asYamlLines(): List<String> {
+  private fun MatrixExclusion.asYamlLines(): List<String> {
 
     return values.mapIndexed { index, namedValue ->
 

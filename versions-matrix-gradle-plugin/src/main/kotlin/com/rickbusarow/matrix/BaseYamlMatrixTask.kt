@@ -15,11 +15,11 @@
 
 package com.rickbusarow.matrix
 
-import jdk.javadoc.internal.Versions
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Internal
@@ -39,10 +39,15 @@ public abstract class BaseYamlMatrixTask @Inject constructor(
   public val yamlFile: RegularFileProperty = objectFactory.fileProperty()
 
   @get:Input
-  public abstract val startTag: Property<String>
+  public abstract val matrix: Property<Matrix>
 
-  @get:Input
-  public abstract val endTag: Property<String>
+  @get:Internal
+  protected val startTag: Provider<String>
+    get() = matrix.map { "### <start-matrix-${it.name}>" }
+
+  @get:Internal
+  protected val endTag: Provider<String>
+    get() = matrix.map { "### <end-matrix-${it.name}>" }
 
   @get:Internal
   protected val matrixSectionRegex: Regex by lazy(LazyThreadSafetyMode.NONE) {
@@ -90,16 +95,10 @@ public abstract class BaseYamlMatrixTask @Inject constructor(
   }
 
   private fun createYaml(indentSize: Int): String {
-    val versionsMatrix = VersionsMatrix(
-      gradleList = Versions.gradleListDefault,
-      agpList = Versions.agpListDefault,
-      anvilList = Versions.anvilListDefault,
-      kotlinList = Versions.kotlinListDefault
-    )
 
     return VersionsMatrixYamlGenerator()
       .generate(
-        matrix = versionsMatrix,
+        matrix = matrix.get(),
         indentSize = indentSize
       )
   }

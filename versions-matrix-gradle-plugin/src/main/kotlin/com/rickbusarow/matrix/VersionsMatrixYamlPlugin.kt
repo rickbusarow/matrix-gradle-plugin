@@ -15,9 +15,9 @@
 
 package com.rickbusarow.matrix
 
-import com.rickbusarow.kgx.applyOnce
 import com.rickbusarow.kgx.checkProjectIsRoot
 import com.rickbusarow.kgx.dependsOn
+import com.rickbusarow.matrix.internal.capitalize
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.language.base.plugins.LifecycleBasePlugin
@@ -26,35 +26,39 @@ public abstract class VersionsMatrixYamlPlugin : Plugin<Project> {
   override fun apply(target: Project) {
 
     target.checkProjectIsRoot()
-    target.plugins.applyOnce("base")
+    target.plugins.apply("base")
 
     val ciFile = target.file(".github/workflows/ci.yml")
 
     require(ciFile.exists()) {
       "Could not resolve '$ciFile'.  Only add the ci/yaml matrix tasks to the root project."
     }
-    val versionsMatrixYamlUpdate = target.tasks.register(
-      "versionsMatrixYamlUpdate",
-      VersionsMatrixYamlGenerateTask::class.java
-    ) { task ->
-      task.yamlFile.set(ciFile)
-      task.startTag.set("### <start-versions-matrix>")
-      task.endTag.set("### <end-versions-matrix>")
+
+    val extension = target.extensions.create("matrices", MatricesExtension::class.java)
+
+    extension.matrices.configureEach { matrixExtension ->
+
+      val taskNameStart = "matrixYaml${matrixExtension.name.capitalize()}"
+
+      val versionsMatrixYamlUpdate = target.tasks.register(
+        "${taskNameStart}Update",
+        VersionsMatrixYamlGenerateTask::class.java
+      ) { task ->
+        task.yamlFile.set(ciFile)
+        task.matrix.set(matrixExtension.matrix())
+      }
+
+      val versionsMatrixYamlCheck = target.tasks.register(
+        "${taskNameStart}Check",
+        VersionsMatrixYamlCheckTask::class.java
+      ) { task ->
+        task.yamlFile.set(ciFile)
+        task.matrix.set(matrixExtension.matrix())
+        task.mustRunAfter(versionsMatrixYamlUpdate)
+      }
+
+      // Automatically run `versionsMatrixYamlCheck` when running `check`
+      target.tasks.named(LifecycleBasePlugin.CHECK_TASK_NAME).dependsOn(versionsMatrixYamlCheck)
     }
-
-    target.tasks.named("fix").dependsOn(versionsMatrixYamlUpdate)
-
-    val versionsMatrixYamlCheck = target.tasks.register(
-      "versionsMatrixYamlCheck",
-      VersionsMatrixYamlCheckTask::class.java
-    ) { task ->
-      task.yamlFile.set(ciFile)
-      task.startTag.set("### <start-versions-matrix>")
-      task.endTag.set("### <end-versions-matrix>")
-      task.mustRunAfter(versionsMatrixYamlUpdate)
-    }
-
-    // Automatically run `versionsMatrixYamlCheck` when running `check`
-    target.tasks.named(LifecycleBasePlugin.CHECK_TASK_NAME).dependsOn(versionsMatrixYamlCheck)
   }
 }

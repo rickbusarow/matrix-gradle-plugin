@@ -15,6 +15,8 @@
 
 package com.rickbusarow.matrix.internal
 
+import java.util.Locale
+
 /**
  * shorthand for `mapTo(mutableSetOf()) { ... }`
  *
@@ -41,3 +43,6 @@ internal inline fun <T, R> Iterable<T>.flatMapToSet(
   destination: MutableSet<R> = mutableSetOf(),
   transform: (T) -> Iterable<R>
 ): MutableSet<R> = flatMapTo(destination, transform)
+
+internal fun String.capitalize(locale: Locale = Locale.US): String =
+  replaceFirstChar { it.uppercase(locale) }
