@@ -1,20 +1,20 @@
 [
   {
-    "gradlePath": ":versions-matrix-gradle-plugin",
-    "group": "com.rickbusarow.versions-matrix",
-    "artifactId": "versions-matrix-gradle-plugin",
-    "description": "Syncs a versions matrix between versions catalog, GitHub workflows, and BuildConfig.",
-    "packaging": "jar",
-    "javaVersion": "11",
-    "publicationName": "pluginMaven"
-  },
-  {
-    "gradlePath": ":versions-matrix-gradle-plugin",
-    "group": "com.rickbusarow.versions-matrix",
-    "artifactId": "com.rickbusarow.versions-matrix.gradle.plugin",
+    "gradlePath": ":matrix-gradle-plugin",
+    "group": "com.rickbusarow.matrix",
+    "artifactId": "com.rickbusarow.matrix.gradle.plugin",
     "description": "Syncs a versions matrix between versions catalog, GitHub workflows, and BuildConfig.",
     "packaging": "pom",
-    "javaVersion": "11",
-    "publicationName": "versions-matrix-gradle-pluginPluginMarkerMaven"
+    "javaVersion": "17",
+    "publicationName": "matrix-gradle-pluginPluginMarkerMaven"
+  },
+  {
+    "gradlePath": ":matrix-gradle-plugin",
+    "group": "com.rickbusarow.matrix",
+    "artifactId": "matrix-gradle-plugin",
+    "description": "Syncs a versions matrix between versions catalog, GitHub workflows, and BuildConfig.",
+    "packaging": "jar",
+    "javaVersion": "17",
+    "publicationName": "pluginMaven"
   }
 ]

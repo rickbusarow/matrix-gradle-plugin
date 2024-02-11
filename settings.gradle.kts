@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-rootProject.name = "versions-matrix-gradle-plugin"
+rootProject.name = "matrix"
 
 pluginManagement {
   val allowMavenLocal = providers
@@ -29,10 +29,12 @@ pluginManagement {
     mavenCentral()
     google()
   }
-  includeBuild("build-logic")
+  includeBuild("build-logic/conventions")
+  includeBuild("build-logic/settings")
 }
 
 plugins {
+  id("builds.gradle-settings")
   id("com.gradle.enterprise") version "3.16.1"
 }
 
@@ -80,5 +82,7 @@ dependencyResolutionManagement {
 }
 
 include(
-  ":versions-matrix-gradle-plugin"
+  ":matrix-gradle-plugin"
 )
+
+includeBuild("build-logic/delegate")

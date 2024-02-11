@@ -13,93 +13,50 @@
  * limitations under the License.
  */
 
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+buildscript {
+  dependencies {
+    classpath(libs.kotlin.gradle.plugin)
+    classpath(libs.vanniktech.publish)
+  }
+}
+
 plugins {
-  kotlin("jvm")
-  alias(libs.plugins.google.ksp)
+  base
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.moduleCheck)
   alias(libs.plugins.ktlint)
-  id("java-gradle-plugin")
 }
 
-gradlePlugin {
-  plugins {
-    create("ben-manes") {
-      id = "mcbuild.ben-manes"
-      implementationClass = "builds.BenManesVersionsPlugin"
-    }
-    create("builds.check") {
-      id = "builds.check"
-      implementationClass = "builds.CheckPlugin"
-    }
-    create("builds.clean") {
-      id = "builds.clean"
-      implementationClass = "builds.CleanPlugin"
-    }
-    create("builds.dependency-guard") {
-      id = "builds.dependency-guard"
-      implementationClass = "builds.DependencyGuardConventionPlugin"
-    }
-    create("builds.detekt") {
-      id = "builds.detekt"
-      implementationClass = "builds.DetektConventionPlugin"
-    }
-    create("builds.dokka") {
-      id = "builds.dokka"
-      implementationClass = "builds.DokkaConventionPlugin"
-    }
-    create("builds.integration-tests") {
-      id = "builds.integration-tests"
-      implementationClass = "builds.IntegrationTestsConventionPlugin"
-    }
-    create("builds.kotlin") {
-      id = "builds.kotlin"
-      implementationClass = "builds.KotlinJvmConventionPlugin"
-    }
-    create("builds.knit") {
-      id = "builds.knit"
-      implementationClass = "builds.KnitConventionPlugin"
-    }
-    create("builds.ktlint") {
-      id = "builds.ktlint"
-      implementationClass = "builds.KtLintConventionPlugin"
-    }
-    create("builds.spotless") {
-      id = "builds.spotless"
-      implementationClass = "builds.SpotlessConventionPlugin"
-    }
-    create("builds.test") {
-      id = "builds.test"
-      implementationClass = "builds.TestConventionPlugin"
-    }
-  }
+moduleCheck {
+  deleteUnused = true
+  checks.sortDependencies = true
 }
 
-dependencies {
+allprojects {
 
-  api(libs.rickBusarow.kgx)
-  api(libs.rickBusarow.ktrules)
-  api(libs.square.kotlinPoet)
-
-  api(project(":core"))
-
-  implementation(libs.benManes.versions)
-  implementation(libs.detekt.gradle)
-  implementation(libs.diffplug.spotless)
-  implementation(libs.dokka.gradle)
-  implementation(libs.dokka.versioning)
-  implementation(libs.dropbox.dependencyGuard)
-  implementation(libs.github.release)
-  implementation(libs.google.ksp)
-  implementation(libs.gradle.plugin.publish)
-  implementation(libs.jetbrains.markdown)
-  implementation(libs.johnrengelman.shadowJar)
-  implementation(libs.kotlin.compiler)
-  implementation(libs.kotlin.gradle.plugin)
-  implementation(libs.kotlin.reflect)
-  implementation(libs.kotlinx.binaryCompatibility)
-  implementation(libs.kotlinx.knit)
-  implementation(libs.rickBusarow.ktlint)
-  implementation(libs.rickBusarow.moduleCheck.gradle.plugin) {
-    exclude(group = "org.jetbrains.kotlin")
+  plugins.withId("java-base") {
+    configure<JavaPluginExtension> {
+      @Suppress("MagicNumber")
+      toolchain.languageVersion.set(JavaLanguageVersion.of(11))
+    }
   }
-  implementation(libs.vanniktech.publish)
+
+  afterEvaluate {
+
+    dependencies {
+      ktlint(libs.rickBusarow.ktrules)
+    }
+  }
+
+  tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+      jvmTarget = "11"
+    }
+  }
+
+  tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+  }
 }

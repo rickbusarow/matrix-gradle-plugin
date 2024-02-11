@@ -42,7 +42,7 @@
         "com.rickbusarow.ktlint:",
         "com.rickbusarow.ktrules:",
         "com.rickbusarow.lattice:",
-        "com.rickbusarow.versions-matrix-gradle-plugin:",
+        "com.rickbusarow.matrix-gradle-plugin:",
         "com.rickbusarow.modulecheck:"
       ],
       "automerge": true,

@@ -4,6 +4,9 @@
     <inspection_tool class="ClassName" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <scope name="Tests" level="WEAK WARNING" enabled="false" />
     </inspection_tool>
+    <inspection_tool class="ConstPropertyName" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="namePattern" value="[A-Z][_A-Z\d]*|serialVersionUID" />
+    </inspection_tool>
     <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="FunctionName" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <scope name="Tests" level="WEAK WARNING" enabled="false" />
@@ -14,6 +17,7 @@
     <inspection_tool class="RemoveRedundantBackticks" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="Tests" level="WARNING" enabled="false" />
     </inspection_tool>
+    <inspection_tool class="SerializableHasSerialVersionUIDField" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="TestFunctionName" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <scope name="Tests" level="WEAK WARNING" enabled="false" />
     </inspection_tool>

@@ -1,0 +1,118 @@
+public abstract class com/rickbusarow/matrix/BaseYamlMatrixTask : org/gradle/api/DefaultTask {
+	public fun <init> (Lorg/gradle/api/model/ObjectFactory;)V
+	protected final fun createNewText (Ljava/lang/String;)Ljava/lang/String;
+	protected final fun createStyledOutput ()Lorg/gradle/internal/logging/text/StyledTextOutput;
+	protected final fun getEndTag ()Lorg/gradle/api/provider/Provider;
+	public abstract fun getMatrix ()Lorg/gradle/api/provider/Property;
+	protected final fun getMatrixSectionRegex ()Lkotlin/text/Regex;
+	protected final fun getStartTag ()Lorg/gradle/api/provider/Provider;
+	public final fun getYamlFile ()Lorg/gradle/api/file/RegularFileProperty;
+	protected final fun getYamlSections (Ljava/lang/String;)Lkotlin/sequences/Sequence;
+	protected final fun requireCiFile ()Ljava/io/File;
+}
+
+public abstract interface class com/rickbusarow/matrix/HasParamNames {
+	public abstract fun getParamNames ()Lcom/rickbusarow/matrix/ParamNames;
+}
+
+public abstract class com/rickbusarow/matrix/MatricesExtension {
+	public fun <init> (Lcom/rickbusarow/matrix/MatrixTaskFactory;Lorg/gradle/api/model/ObjectFactory;)V
+	public final fun getMatrices ()Lorg/gradle/api/NamedDomainObjectContainer;
+	public final fun matrix (Ljava/lang/String;Lorg/gradle/api/Action;)Lorg/gradle/api/NamedDomainObjectProvider;
+}
+
+public final class com/rickbusarow/matrix/Matrix : java/io/Serializable {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/util/List;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getExclusions ()Ljava/util/List;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getParamGroups ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface annotation class com/rickbusarow/matrix/MatrixDsl : java/lang/annotation/Annotation {
+}
+
+public final class com/rickbusarow/matrix/MatrixExclusion : java/io/Serializable {
+	public fun <init> (Ljava/util/Set;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValues ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/rickbusarow/matrix/MatrixExtension : java/io/Serializable {
+	public fun <init> (Ljava/lang/String;Lorg/gradle/api/provider/ProviderFactory;)V
+	public final fun exclude (Ljava/util/Collection;)V
+	public final fun exclude ([Lkotlin/Pair;)V
+	public abstract fun getExclusions ()Lorg/gradle/api/provider/ListProperty;
+	public final fun getName ()Ljava/lang/String;
+	public abstract fun getParamGroups ()Lorg/gradle/api/NamedDomainObjectContainer;
+	public abstract fun getWorkflowFiles ()Lorg/gradle/api/file/ConfigurableFileCollection;
+	public final fun paramGroup (Ljava/lang/String;Ljava/util/Collection;)Lorg/gradle/api/NamedDomainObjectProvider;
+	public final fun paramGroup (Ljava/lang/String;Ljava/util/concurrent/Callable;)Lorg/gradle/api/NamedDomainObjectProvider;
+	public final fun paramGroup (Ljava/lang/String;Lorg/gradle/api/provider/Provider;)Lorg/gradle/api/NamedDomainObjectProvider;
+}
+
+public abstract class com/rickbusarow/matrix/MatrixPlugin : org/gradle/api/Plugin {
+	public fun <init> ()V
+	public synthetic fun apply (Ljava/lang/Object;)V
+	public fun apply (Lorg/gradle/api/Project;)V
+}
+
+public final class com/rickbusarow/matrix/MatrixTaskFactory : java/io/Serializable {
+	public fun <init> (Lorg/gradle/api/Project;)V
+	public final fun create (Lorg/gradle/api/NamedDomainObjectProvider;)V
+}
+
+public abstract class com/rickbusarow/matrix/NamedParamGroup : com/rickbusarow/matrix/HasParamNames, java/io/Serializable {
+	public fun <init> (Ljava/lang/String;Lorg/gradle/api/model/ObjectFactory;)V
+	public final fun getBuildConfigName ()Lorg/gradle/api/provider/Property;
+	public final fun getCatalogAliasName ()Lorg/gradle/api/provider/Property;
+	public final fun getDefaultValue ()Lorg/gradle/api/provider/Property;
+	public final fun getName ()Ljava/lang/String;
+	public fun getParamNames ()Lcom/rickbusarow/matrix/ParamNames;
+	public abstract fun getParamValues ()Lorg/gradle/api/provider/ListProperty;
+	public final fun getYamlName ()Lorg/gradle/api/provider/Property;
+}
+
+public final class com/rickbusarow/matrix/NamedParamValue : com/rickbusarow/matrix/HasParamNames, java/io/Serializable {
+	public fun <init> (Lcom/rickbusarow/matrix/ParamNames;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getParamNames ()Lcom/rickbusarow/matrix/ParamNames;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/rickbusarow/matrix/ParamCombination : java/io/Serializable {
+	public fun <init> (Ljava/util/Set;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getList ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/rickbusarow/matrix/ParamNames : java/io/Serializable {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBuildConfigName ()Ljava/lang/String;
+	public final fun getCatalogAliasName ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getYamlName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class com/rickbusarow/matrix/VersionsMatrixYamlCheckTask : com/rickbusarow/matrix/BaseYamlMatrixTask, org/gradle/api/tasks/VerificationTask {
+	public fun <init> (Lorg/gradle/api/model/ObjectFactory;)V
+	public final fun check ()V
+}
+
+public abstract class com/rickbusarow/matrix/VersionsMatrixYamlGenerateTask : com/rickbusarow/matrix/BaseYamlMatrixTask {
+	public fun <init> (Lorg/gradle/api/model/ObjectFactory;)V
+	public final fun execute ()V
+}
+
