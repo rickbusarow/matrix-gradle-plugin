@@ -163,6 +163,7 @@ dependencies {
   compileOnly(libs.buildconfig)
 
   implementation(libs.rickBusarow.kgx)
+  implementation(libs.square.kotlinPoet)
 
   testImplementation(libs.junit.jupiter)
   testImplementation(libs.junit.jupiter.api)

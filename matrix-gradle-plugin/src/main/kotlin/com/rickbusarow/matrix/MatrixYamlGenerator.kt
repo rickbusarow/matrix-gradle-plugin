@@ -15,7 +15,7 @@
 
 package com.rickbusarow.matrix
 
-internal class VersionsMatrixYamlGenerator {
+internal class MatrixYamlGenerator {
 
   fun generate(matrix: Matrix, indentSize: Int): String {
     var currentIndent = " ".repeat(indentSize)
@@ -30,7 +30,7 @@ internal class VersionsMatrixYamlGenerator {
       appendLine(currentIndent + content)
     }
 
-    val yaml = buildString {
+    return buildString {
       line("matrix:")
 
       indent {
@@ -54,10 +54,9 @@ internal class VersionsMatrixYamlGenerator {
         }
       }
     }
-    return yaml
   }
 
-  private fun List<String>.asYamlList() = joinToString(", ", "[ ", " ]") { it }
+  private fun List<String>.asYamlList() = joinToString(", ", "[", "]") { it }
 
   private fun MatrixExclusion.asYamlLines(): List<String> {
 

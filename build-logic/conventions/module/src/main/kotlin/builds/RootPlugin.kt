@@ -30,15 +30,14 @@ abstract class RootPlugin : Plugin<Project> {
 
     target.checkProjectIsRoot()
 
-    // if (!target.isRealRootProject()) {
-    target.rootDir.resolveInParent("gradle.properties")
-      .inputStream()
-      .use { Properties().apply { load(it) } }
-      .forEach { key, value ->
-        target.extras.set(key.toString(), value.toString())
-      }
-    // }
-
+    if (!target.isRealRootProject()) {
+      target.rootDir.resolveInParent("gradle.properties")
+        .inputStream()
+        .use { Properties().apply { load(it) } }
+        .forEach { key, value ->
+          target.extras.set(key.toString(), value.toString())
+        }
+    }
 
     target.plugins.apply("com.autonomousapps.dependency-analysis")
 

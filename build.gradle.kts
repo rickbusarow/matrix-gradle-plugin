@@ -24,6 +24,7 @@ buildscript {
 plugins {
   id("root")
   alias(libs.plugins.moduleCheck)
+  alias(libs.plugins.buildconfig)
   id("com.rickbusarow.matrix")
 }
 
@@ -31,8 +32,11 @@ matrices {
 
   matrix("deps") {
 
-    paramGroup("kotlin") { listOf(libs.versions.kotlin.get()) }
-    paramGroup("gradle") { listOf("8.5", gradle.gradleVersion) }
+    val kotlin = paramGroup("kotlin") { setOf("1.5.31", libs.versions.kotlin.get()) }
+    val gradle = paramGroup("gradle") { setOf("7.0", "8.5", gradle.gradleVersion) }
+    val other = paramGroup("other") { setOf("1.0.0", "2.0.0") }
+
+    exclude(kotlin to "1.5.31", gradle to "7.0")
   }
 }
 

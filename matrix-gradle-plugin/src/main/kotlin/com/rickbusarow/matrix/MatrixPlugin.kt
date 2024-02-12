@@ -15,8 +15,10 @@
 
 package com.rickbusarow.matrix
 
+import com.github.gmazzo.buildconfig.BuildConfigExtension
 import com.rickbusarow.kgx.checkProjectIsRoot
 import com.rickbusarow.kgx.dependsOn
+import com.rickbusarow.kgx.newInstance
 import com.rickbusarow.matrix.internal.capitalize
 import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Plugin
@@ -40,10 +42,16 @@ public abstract class MatrixPlugin : Plugin<Project> {
       "Could not resolve '$ciFile'.  Only add the ci/yaml matrix tasks to the root project."
     }
 
+    val buildConfigExtension = target.extensions
+      .getByType(BuildConfigExtension::class.java)
+
     target.extensions.create(
       "matrices",
       MatricesExtension::class.java,
-      MatrixTaskFactory(target)
+      MatrixTaskFactory(target),
+      target.objects.newInstance<BuildConfigConfigurator>(
+        buildConfigExtension
+      )
     )
   }
 }
@@ -64,7 +72,7 @@ public class MatrixTaskFactory @Inject constructor(
 
     val versionsMatrixYamlUpdate = target.tasks.register(
       "${taskNameStart}Update",
-      VersionsMatrixYamlGenerateTask::class.java
+      MatrixYamlGenerateTask::class.java
     ) { task ->
       task.group = "Matrix"
 
@@ -74,7 +82,7 @@ public class MatrixTaskFactory @Inject constructor(
 
     val versionsMatrixYamlCheck = target.tasks.register(
       "${taskNameStart}Check",
-      VersionsMatrixYamlCheckTask::class.java
+      MatrixYamlCheckTask::class.java
     ) { task ->
       task.group = "Matrix"
 

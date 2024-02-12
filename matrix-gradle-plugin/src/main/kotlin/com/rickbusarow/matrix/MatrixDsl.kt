@@ -83,7 +83,15 @@ public abstract class NamedParamGroup @Inject constructor(
   public val buildConfigName: Property<String> = objects.property<String>(name)
 
   @get:Input
+  internal val buildConfigNameFinal: String
+    get() = buildConfigName.getAndFinalize()
+
+  @get:Input
   public val catalogAliasName: Property<String> = objects.property<String>(name)
+
+  @get:Input
+  internal val catalogAliasNameFinal: String
+    get() = catalogAliasName.getAndFinalize()
 
   @get:Internal
   override val paramNames: ParamNames by lazy(NONE) {

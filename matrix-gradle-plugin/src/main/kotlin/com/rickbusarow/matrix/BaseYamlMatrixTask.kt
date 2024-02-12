@@ -15,6 +15,8 @@
 
 package com.rickbusarow.matrix
 
+import com.rickbusarow.matrix.internal.Color.Companion.colorized
+import com.rickbusarow.matrix.internal.Color.LIGHT_YELLOW
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
@@ -56,46 +58,42 @@ public abstract class BaseYamlMatrixTask @Inject constructor(
     val startTagEscaped = Regex.escape(startTag.get())
     val endTagEscaped = Regex.escape(endTag.get())
 
-    val pattern = buildString {
+    buildRegex {
 
       // Match and capture everything before the line with the start tag
-      reg("""([\s\S]*?)""")
+      appendRegex("""((?:.*\R)*?)""")
       // Match and capture all whitespaces before the start tag
-      reg("""( *)""")
+      appendRegex("""( *)""")
       // Match and capture the line with the start tag
-      reg("""(.*$startTagEscaped.*\n)""")
+      appendRegex("""(.*$startTagEscaped.*\R)""")
       // Match and capture everything before the end tag
-      reg("""([\s\S]+?)""")
+      appendRegex("""([\s\S]+?)""")
       // Match and capture the line with the end tag
-      reg("""(.*$endTagEscaped)""")
+      appendRegex("""(.*$endTagEscaped)""")
     }
-
-    Regex(pattern)
   }
 
-  protected fun getYamlSections(ciText: String): Sequence<MatchResult> = matrixSectionRegex
+  private fun getYamlSections(ciText: String): Sequence<MatchResult> = matrixSectionRegex
     .findAll(ciText)
     .also { matches ->
 
-      if (!matches.iterator().hasNext()) {
+      require(matches.iterator().hasNext()) {
         val start = startTag.get()
         val end = endTag.get()
+        val yaml = yamlFile.get()
 
-        val message =
-          "Couldn't find any `$start`/`$end` sections in the CI file:" +
-            "\tfile://${yamlFile.get()}\n\n" +
-            "\tSurround the matrix section with the comments '$start' and `$end':\n\n" +
-            "\t    strategy:\n" +
-            "\t      $start\n" +
-            "\t      matrix:\n" +
-            "\t        [ ... ]\n" +
-            "\t      $end\n"
-
-        createStyledOutput()
-          .withStyle(StyledTextOutput.Style.Description)
-          .println(message)
-
-        require(false)
+        """
+          |Couldn't find any `$start`/`$end` sections in the CI file.
+          |  file://$yaml
+          |
+          |Surround the matrix section with the comments '$start' and `$end':
+          |
+          |    strategy:
+          |      $start
+          |      matrix:
+          |      $end
+        """.trimMargin()
+          .colorized(LIGHT_YELLOW)
       }
     }
 
@@ -124,11 +122,10 @@ public abstract class BaseYamlMatrixTask @Inject constructor(
 
   private fun createYaml(indentSize: Int): String {
 
-    return VersionsMatrixYamlGenerator()
-      .generate(
-        matrix = matrix.get(),
-        indentSize = indentSize
-      )
+    return MatrixYamlGenerator().generate(
+      matrix = matrix.get(),
+      indentSize = indentSize
+    )
   }
 
   protected fun createStyledOutput(): StyledTextOutput = services
@@ -145,5 +142,18 @@ public abstract class BaseYamlMatrixTask @Inject constructor(
     return ciFile
   }
 
-  private fun StringBuilder.reg(@Language("regexp") str: String) = append(str)
+  private fun buildRegex(builder: RegexBuilder.() -> Unit): Regex {
+    return RegexBuilder(StringBuilder())
+      .apply { builder() }
+      .build()
+  }
+
+  private class RegexBuilder(private val stringBuilder: StringBuilder) {
+
+    fun appendRegex(@Language("regexp") str: String): RegexBuilder = apply {
+      stringBuilder.append(str)
+    }
+
+    fun build(): Regex = Regex(stringBuilder.toString())
+  }
 }

@@ -26,6 +26,7 @@ import javax.inject.Inject
 @Suppress("IdentifierGrammar")
 public abstract class MatricesExtension @Inject constructor(
   private val taskFactory: MatrixTaskFactory,
+  private val buildConfigConfigurator: BuildConfigConfigurator,
   objects: ObjectFactory
 ) {
 
@@ -39,6 +40,8 @@ public abstract class MatricesExtension @Inject constructor(
 
     val matrixExtension = matrices.register(name, action)
     taskFactory.create(matrixExtension)
+    buildConfigConfigurator.buildConfig("main", matrixExtension)
+
     return matrixExtension
   }
 }

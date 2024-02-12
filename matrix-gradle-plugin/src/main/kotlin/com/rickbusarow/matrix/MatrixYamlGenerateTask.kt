@@ -15,27 +15,44 @@
 
 package com.rickbusarow.matrix
 
+import com.rickbusarow.matrix.internal.Color.Companion.colorized
+import com.rickbusarow.matrix.internal.Color.LIGHT_YELLOW
+import com.rickbusarow.matrix.internal.diffString
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.VerificationTask
 import javax.inject.Inject
 
-public abstract class VersionsMatrixYamlCheckTask @Inject constructor(
+/** */
+public abstract class MatrixYamlGenerateTask @Inject constructor(
   objectFactory: ObjectFactory
-) : BaseYamlMatrixTask(objectFactory), VerificationTask {
+) : BaseYamlMatrixTask(objectFactory) {
 
   @TaskAction
-  public fun check() {
+  public fun execute() {
     val ciFile = requireCiFile()
 
     val existingText = ciFile.readText()
 
     val newText = createNewText(existingText)
 
-    check(existingText == newText) {
-      "The versions matrix in the CI file is out of date.  " +
-        "Run ./gradlew versionsMatrixYamlUpdate to automatically update." +
-        "\n\tfile://${yamlFile.get()}"
+    if (existingText != newText) {
+
+      ciFile.writeText(newText)
+
+      val message = """
+        Updated the versions matrix in the CI file.
+          file://${yamlFile.get()}
+      """.trimIndent()
+        .colorized(LIGHT_YELLOW)
+
+      logger.lifecycle(
+        """
+        |$message
+        |
+        |${diffString(existingText, newText)}
+        |
+        """.trimMargin()
+      )
     }
   }
 }

@@ -18,12 +18,12 @@ package builds
 import com.rickbusarow.kgx.applyOnce
 import com.rickbusarow.kgx.buildDir
 import com.rickbusarow.kgx.isPartOfRootBuild
-import com.vanniktech.maven.publish.MavenPublishBasePlugin
+import com.rickbusarow.kgx.isRootProject
+import com.rickbusarow.kgx.javaExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.DuplicatesStrategy
-import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode.Strict
@@ -40,6 +40,8 @@ abstract class KotlinJvmConventionPlugin : Plugin<Project> {
         toolChain.languageVersion.set(JavaLanguageVersion.of(target.JDK))
       }
     }
+
+    target.javaExtension.targetCompatibility = JavaVersion.toVersion(target.JVM_TARGET)
 
     target.tasks.withType(KotlinCompile::class.java).configureEach { task ->
       task.kotlinOptions {
@@ -65,17 +67,13 @@ abstract class KotlinJvmConventionPlugin : Plugin<Project> {
       }
     }
 
-    target.plugins.withType(MavenPublishBasePlugin::class.java).configureEach {
-      target.extensions.configure(JavaPluginExtension::class.java) { extension ->
-        extension.targetCompatibility = JavaVersion.toVersion(target.JVM_TARGET)
+    if (!target.isRootProject()) {
+      val newBuildDir = when {
+        target.isPartOfRootBuild -> target.buildDir().resolve("root")
+        else -> target.buildDir().resolve("delegate")
       }
+      target.layout.buildDirectory.set(newBuildDir)
     }
-
-    val newBuildDir = when {
-      target.isPartOfRootBuild -> target.buildDir().resolve("root")
-      else -> target.buildDir().resolve("delegate")
-    }
-    target.layout.buildDirectory.set(newBuildDir)
 
     target.tasks.register("buildTests") { it.dependsOn("testClasses") }
 
