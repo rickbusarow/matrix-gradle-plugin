@@ -15,6 +15,7 @@
 
 package com.rickbusarow.matrix
 
+import com.github.gmazzo.buildconfig.BuildConfigExtension
 import com.rickbusarow.kgx.checkProjectIsRoot
 import com.rickbusarow.kgx.dependsOn
 import com.rickbusarow.matrix.internal.capitalize
@@ -43,7 +44,8 @@ public abstract class MatrixPlugin : Plugin<Project> {
     target.extensions.create(
       "matrices",
       MatricesExtension::class.java,
-      MatrixTaskFactory(target)
+      MatrixTaskFactory(target),
+      BuildConfigConfigurator(target.extensions.getByType(BuildConfigExtension::class.java))
     )
   }
 }
@@ -64,7 +66,7 @@ public class MatrixTaskFactory @Inject constructor(
 
     val versionsMatrixYamlUpdate = target.tasks.register(
       "${taskNameStart}Update",
-      VersionsMatrixYamlGenerateTask::class.java
+      MatrixYamlGenerateTask::class.java
     ) { task ->
       task.group = "Matrix"
 
@@ -74,7 +76,7 @@ public class MatrixTaskFactory @Inject constructor(
 
     val versionsMatrixYamlCheck = target.tasks.register(
       "${taskNameStart}Check",
-      VersionsMatrixYamlCheckTask::class.java
+      MatrixYamlCheckTask::class.java
     ) { task ->
       task.group = "Matrix"
 

@@ -18,6 +18,7 @@ package builds
 import com.rickbusarow.kgx.applyOnce
 import com.rickbusarow.kgx.buildDir
 import com.rickbusarow.kgx.isPartOfRootBuild
+import com.rickbusarow.kgx.isRootProject
 import com.vanniktech.maven.publish.MavenPublishBasePlugin
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
@@ -71,11 +72,13 @@ abstract class KotlinJvmConventionPlugin : Plugin<Project> {
       }
     }
 
-    val newBuildDir = when {
-      target.isPartOfRootBuild -> target.buildDir().resolve("root")
-      else -> target.buildDir().resolve("delegate")
+    if (!target.isRootProject()) {
+      val newBuildDir = when {
+        target.isPartOfRootBuild -> target.buildDir().resolve("root")
+        else -> target.buildDir().resolve("delegate")
+      }
+      target.layout.buildDirectory.set(newBuildDir)
     }
-    target.layout.buildDirectory.set(newBuildDir)
 
     target.tasks.register("buildTests") { it.dependsOn("testClasses") }
 

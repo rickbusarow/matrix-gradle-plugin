@@ -176,6 +176,8 @@ dependencies {
   testImplementation(libs.kotest.property.jvm)
   testImplementation(libs.kotlin.gradle.plugin)
 
+  implementation(libs.square.kotlinPoet)
+
   worker(libs.kotlin.gradle.plugin)
   worker(libs.kotlin.gradle.plugin.api)
 }

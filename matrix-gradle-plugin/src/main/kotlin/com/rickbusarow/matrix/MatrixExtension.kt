@@ -72,8 +72,27 @@ public abstract class MatrixExtension @Inject constructor(
     return paramGroup(name, providerFactory.provider(versions))
   }
 
+  @JvmName("excludeProvider")
+  public fun exclude(vararg nameToValue: Pair<Provider<NamedParamGroup>, String>) {
+    exclude(nameToValue.asList())
+  }
+
   public fun exclude(vararg nameToValue: Pair<NamedParamGroup, String>) {
     exclude(nameToValue.asList())
+  }
+
+  @JvmName("excludeProvider")
+  public fun exclude(nameToValue: Collection<Pair<Provider<NamedParamGroup>, String>>) {
+
+    exclusions.add(
+      providerFactory.provider {
+        MatrixExclusion(
+          nameToValue.mapToSet { (group, value) ->
+            NamedParamValue(paramNames = group.get().paramNames, value = value)
+          }
+        )
+      }
+    )
   }
 
   public fun exclude(nameToValue: Collection<Pair<NamedParamGroup, String>>) {
