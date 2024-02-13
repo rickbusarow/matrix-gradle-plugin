@@ -19,14 +19,6 @@ plugins {
   id("java-gradle-plugin")
 }
 
-// TODO (rbusarow) delete me
-kotlin {
-  check(System.getenv("CI") == null) { "delete me" }
-  compilerOptions {
-    freeCompilerArgs.add("-Xjvm-default=all-compatibility")
-  }
-}
-
 gradlePlugin {
   plugins {
     create("composite") {
