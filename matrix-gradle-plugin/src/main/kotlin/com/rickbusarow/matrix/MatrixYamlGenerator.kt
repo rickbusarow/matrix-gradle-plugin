@@ -56,7 +56,7 @@ internal class MatrixYamlGenerator {
     }
   }
 
-  private fun List<String>.asYamlList() = joinToString(", ", "[ ", " ]") { it }
+  private fun List<String>.asYamlList() = joinToString(", ", "[", "]") { it }
 
   private fun MatrixExclusion.asYamlLines(): List<String> {
 
