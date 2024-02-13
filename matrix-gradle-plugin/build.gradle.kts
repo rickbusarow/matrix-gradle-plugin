@@ -163,6 +163,7 @@ dependencies {
   compileOnly(libs.buildconfig)
 
   implementation(libs.rickBusarow.kgx)
+  implementation(libs.square.kotlinPoet)
 
   testImplementation(libs.junit.jupiter)
   testImplementation(libs.junit.jupiter.api)
@@ -175,8 +176,6 @@ dependencies {
   testImplementation(libs.kotest.extensions)
   testImplementation(libs.kotest.property.jvm)
   testImplementation(libs.kotlin.gradle.plugin)
-
-  implementation(libs.square.kotlinPoet)
 
   worker(libs.kotlin.gradle.plugin)
   worker(libs.kotlin.gradle.plugin.api)
