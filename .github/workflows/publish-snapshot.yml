@@ -1,4 +1,5 @@
 name: Publish snapshot
+run-name: Publish snapshot on ${{ github.ref-name }}
 
 on:
   workflow_dispatch:
