@@ -19,7 +19,7 @@ jobs:
     strategy:
       ### <start-matrix-deps>
       matrix:
-        kotlin: ['1.2.3']
+        kotlin: ["1.2.3"]
         exclude: []
       ### <end-matrix-deps>
     steps:
