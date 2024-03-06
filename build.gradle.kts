@@ -26,6 +26,7 @@ plugins {
   alias(libs.plugins.moduleCheck)
   alias(libs.plugins.buildconfig)
   id("com.rickbusarow.matrix")
+  alias(libs.plugins.doks)
 }
 
 matrices {
