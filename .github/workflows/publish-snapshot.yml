@@ -7,56 +7,26 @@ on:
     branches:
       - main
 
-env:
-  gradleArgs: "-Dorg.gradle.jvmargs=-Xmx10g -Dfile.encoding=UTF-8 -XX:+UseParallelGC"
-
 jobs:
-  build-logic:
-    runs-on: macos-latest
-    steps:
-      - name: check out
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-
-      - name: build build-logic
-        uses: ./.github/actions/gradle-task
-        with:
-          task: :build-logic:compileKotlin :build-logic:jar
-          write-cache-key: build-logic-jar
-
-  build-all:
-    runs-on: macos-latest
-    steps:
-      - name: check out
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-
-      - name: main build
-        uses: ./.github/actions/gradle-task
-        with:
-          task: jar compileKotlin
-          restore-cache-key: build-logic-jar
-          write-cache-key: main-build-artifacts
-
   publish-snapshot:
-    needs:
-      - build-all
+    runs-on: macos-14
     if: github.event.repository.fork == false
-    runs-on: macos-latest
+    timeout-minutes: 30
 
     steps:
-      - name: check out
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
-      - name: Dokka & JavadocJar
-        uses: ./.github/actions/gradle-task
+      - name: Check
+        uses: rickbusarow/actions/gradle-task@bf0940965387f10bcb8b6699a79499d18167dfbe # v1
         with:
-          task: dokkaJavadocJar
+          task: check
+          write-cache-key: main-build-artifacts
           restore-cache-key: main-build-artifacts
 
       - name: Publish Snapshots
-        uses: ./.github/actions/gradle-task
+        uses: rickbusarow/actions/gradle-task@bf0940965387f10bcb8b6699a79499d18167dfbe # v1
         with:
           task: publish
-          write-cache-key: local-m2
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
