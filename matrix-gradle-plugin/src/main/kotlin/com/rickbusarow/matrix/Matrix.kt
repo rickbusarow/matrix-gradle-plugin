@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,6 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+@file:Suppress(
+  "UndocumentedPublicClass",
+  "UndocumentedPublicFunction",
+  "UndocumentedPublicProperty"
+)
 
 package com.rickbusarow.matrix
 
@@ -48,6 +54,7 @@ public class Matrix(
     }
   }
 
+  @Suppress("UnusedPrivateMember")
   private fun List<ParamCombination>.requireNotEmpty(): List<ParamCombination> {
     return apply {
       require(isNotEmpty()) {
@@ -56,11 +63,12 @@ public class Matrix(
     }
   }
 
+  @Suppress("UnusedPrivateMember")
   private fun List<MatrixExclusion>.requireNoDuplicates(): List<MatrixExclusion> {
     return also { exclusions ->
       require(exclusions.toSet().size == exclusions.size) {
         val duplicates = exclusions.filter { target ->
-          exclusions.filter { it == target }.size > 1
+          exclusions.count { it == target } > 1
         }
           .distinct()
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,6 +20,7 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.VerificationTask
 import javax.inject.Inject
 
+/** */
 public abstract class MatrixYamlCheckTask @Inject constructor(
   objectFactory: ObjectFactory
 ) : BaseYamlMatrixTask(objectFactory), VerificationTask {
