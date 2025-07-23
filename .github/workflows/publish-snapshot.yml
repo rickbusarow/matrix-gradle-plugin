@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
       - name: build build-logic
-        uses: ./.github/actions/gradle-task
+        uses: rickbusarow/actions/gradle-task@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
         with:
           task: :build-logic:compileKotlin :build-logic:jar
           write-cache-key: build-logic-jar
@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
       - name: main build
-        uses: ./.github/actions/gradle-task
+        uses: rickbusarow/actions/gradle-task@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
         with:
           task: jar compileKotlin
           restore-cache-key: build-logic-jar
@@ -47,13 +47,13 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
       - name: Dokka & JavadocJar
-        uses: ./.github/actions/gradle-task
+        uses: rickbusarow/actions/gradle-task@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
         with:
           task: dokkaJavadocJar
           restore-cache-key: main-build-artifacts
 
       - name: Publish Snapshots
-        uses: ./.github/actions/gradle-task
+        uses: rickbusarow/actions/gradle-task@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
         with:
           task: publish
           write-cache-key: local-m2

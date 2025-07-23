@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
 
       - name: main build
-        uses: ./.github/actions/gradle-task
+        uses: rickbusarow/actions/gradle-task@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
         with:
           task: jar compileKotlin
           write-cache-key: main-build-artifacts
@@ -37,10 +37,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - name: spotless
-        uses: ./.github/actions/gradle-task-with-commit
+
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2
+        id: app-token
         with:
-          personal-access-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          app-id: ${{ secrets.PR_BOT_APP_ID }}
+          private-key: ${{ secrets.PR_BOT_PRIVATE_KEY }}
+
+      - name: spotless
+        uses: rickbusarow/actions/gradle-task-with-commit@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
+        with:
+          personal-access-token: ${{ steps.app-token.outputs.token }}
           fix-task: spotlessApply
           check-task: spotlessCheck
 
@@ -48,10 +56,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - name: ktlint
-        uses: ./.github/actions/gradle-task-with-commit
+
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2
+        id: app-token
         with:
-          personal-access-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          app-id: ${{ secrets.PR_BOT_APP_ID }}
+          private-key: ${{ secrets.PR_BOT_PRIVATE_KEY }}
+
+      - name: ktlint
+        uses: rickbusarow/actions/gradle-task-with-commit@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
+        with:
+          personal-access-token: ${{ steps.app-token.outputs.token }}
           fix-task: ktlintFormat
           check-task: ktlintCheck
 
@@ -59,10 +75,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - name: dependency-guard
-        uses: ./.github/actions/gradle-task-with-commit
+
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2
+        id: app-token
         with:
-          personal-access-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          app-id: ${{ secrets.PR_BOT_APP_ID }}
+          private-key: ${{ secrets.PR_BOT_PRIVATE_KEY }}
+
+      - name: dependency-guard
+        uses: rickbusarow/actions/gradle-task-with-commit@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
+        with:
+          personal-access-token: ${{ steps.app-token.outputs.token }}
           fix-task: dependencyGuardBaseline
           check-task: dependencyGuard
 
@@ -70,10 +94,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - name: moduleCheck
-        uses: ./.github/actions/gradle-task-with-commit
+
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2
+        id: app-token
         with:
-          personal-access-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          app-id: ${{ secrets.PR_BOT_APP_ID }}
+          private-key: ${{ secrets.PR_BOT_PRIVATE_KEY }}
+
+      - name: moduleCheck
+        uses: rickbusarow/actions/gradle-task-with-commit@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
+        with:
+          personal-access-token: ${{ steps.app-token.outputs.token }}
           fix-task: moduleCheckAuto
           check-task: moduleCheck
 
@@ -81,10 +113,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - name: artifacts-check
-        uses: ./.github/actions/gradle-task-with-commit
+
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2
+        id: app-token
         with:
-          personal-access-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          app-id: ${{ secrets.PR_BOT_APP_ID }}
+          private-key: ${{ secrets.PR_BOT_PRIVATE_KEY }}
+
+      - name: artifacts-check
+        uses: rickbusarow/actions/gradle-task-with-commit@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
+        with:
+          personal-access-token: ${{ steps.app-token.outputs.token }}
           fix-task: artifactsDump
           check-task: artifactsCheck
 
@@ -93,7 +133,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - name: check version is snapshot
-        uses: ./.github/actions/gradle-task
+        uses: rickbusarow/actions/gradle-task@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
         with:
           task: checkVersionIsSnapshot
 
@@ -102,7 +142,7 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - name: detektAll
-        uses: ./.github/actions/gradle-task
+        uses: rickbusarow/actions/gradle-task@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
         with:
           task: detektAll
           restore-cache-key: main-build-artifacts
@@ -122,7 +162,7 @@ jobs:
       - name: check out
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - name: unit tests
-        uses: ./.github/actions/gradle-task
+        uses: rickbusarow/actions/gradle-task@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
         with:
           task: test
           restore-cache-key: main-build-artifacts
@@ -148,7 +188,7 @@ jobs:
       - name: check out
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - name: integration tests
-        uses: ./.github/actions/gradle-task
+        uses: rickbusarow/actions/gradle-task@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
         with:
           task: integrationTest
           restore-cache-key: main-build-artifacts
@@ -174,7 +214,7 @@ jobs:
       - name: check out
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - name: unit tests
-        uses: ./.github/actions/gradle-task
+        uses: rickbusarow/actions/gradle-task@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
         with:
           task: test
           restore-cache-key: main-build-artifacts
@@ -200,7 +240,7 @@ jobs:
       - name: check out
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - name: integration tests
-        uses: ./.github/actions/gradle-task
+        uses: rickbusarow/actions/gradle-task@c602f8da97f00279c6e77d3f25cbedcbf24ef936 # v1
         with:
           task: integrationTest
           restore-cache-key: main-build-artifacts
