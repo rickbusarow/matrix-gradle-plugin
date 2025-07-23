@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,13 +13,18 @@
  * limitations under the License.
  */
 
+@file:Suppress(
+  "UndocumentedPublicClass",
+  "UndocumentedPublicFunction",
+  "UndocumentedPublicProperty"
+)
+
 package com.rickbusarow.matrix
 
-import org.gradle.api.Project
 import java.io.Serializable
 import javax.inject.Inject
 
-public open class VersionsMatrixExtension @Inject constructor(target: Project) : Serializable {
+public open class VersionsMatrixExtension @Inject constructor() : Serializable {
 
   // public val versions = Versions(target.objects, target.libs)
 

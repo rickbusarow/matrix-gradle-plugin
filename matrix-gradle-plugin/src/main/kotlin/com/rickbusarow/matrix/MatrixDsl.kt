@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,6 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+@file:Suppress(
+  "UndocumentedPublicClass",
+  "UndocumentedPublicFunction",
+  "UndocumentedPublicProperty"
+)
 
 package com.rickbusarow.matrix
 
@@ -55,6 +61,7 @@ public class ParamNames(
   public val buildConfigName: String = name,
   public val catalogAliasName: String = name
 ) : Serializable {
+  @Suppress("MaxLineLength")
   override fun toString(): String =
     "ParamId(name: $name | yamlName: $yamlName | buildConfigName: $buildConfigName | catalogAliasName: $catalogAliasName)"
 }
@@ -107,8 +114,9 @@ public abstract class NamedParamGroup @Inject constructor(
   public abstract val paramValues: ListProperty<String>
 
   @get:Input
-  public val defaultValue: Property<String> =
+  public val defaultValue: Property<String> by lazy(NONE) {
     objects.property<String>(paramValues.map { it.last() })
+  }
 }
 
 internal fun <T> Property<T>.getAndFinalize(): T {

@@ -15,11 +15,11 @@ anchors:
   gradleFiles: &gradleFiles
     - "**/*.gradle.kts"
   settingsGeneratorFolders: &settingsGeneratorFolders
-    - "**/lattice-settings-generator/**"
+    - "**/mahout-settings-generator/**"
   settingsGeneratorFoldersAndGradleFiles:
     &settingsGeneratorFoldersAndGradleFiles
     - "**/*.gradle.kts"
-    - "**/lattice-settings-generator/**"
+    - "**/mahout-settings-generator/**"
   testFolders: &testFolders
     - "**/test/**"
     - "**/gradleTest/**"
@@ -96,7 +96,7 @@ comments:
     excludes: *testFolders
     searchInNestedClass: true
     searchInInnerClass: true
-    searchInInnerObject: true
+    searchInInnerObject: false
     searchInInnerInterface: true
     searchInProtectedClass: false
     ignoreAnnotated:
@@ -698,8 +698,6 @@ style:
     active: true
   OptionalUnit:
     active: false
-  OptionalWhenBraces:
-    active: false
   PreferToOverPairSyntax:
     active: false
   ProtectedMemberInFinalClass:
@@ -721,7 +719,7 @@ style:
   SafeCast:
     active: true
   SerialVersionUIDInSerializableClass:
-    active: true
+    active: false
   SpacingBetweenPackageAndImports:
     active: true
   StringShouldBeRawString:

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,7 +24,6 @@ import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.language.base.plugins.LifecycleBasePlugin
-import java.io.Serial
 import java.io.Serializable
 import javax.inject.Inject
 
@@ -49,9 +48,7 @@ public abstract class MatrixPlugin : Plugin<Project> {
       "matrices",
       MatricesExtension::class.java,
       MatrixTaskFactory(target),
-      target.objects.newInstance<BuildConfigConfigurator>(
-        buildConfigExtension
-      )
+      target.objects.newInstance<BuildConfigConfigurator>(buildConfigExtension)
     )
   }
 }
@@ -61,7 +58,7 @@ public class MatrixTaskFactory @Inject constructor(
   private val target: Project
 ) : Serializable {
 
-  public fun create(matrixExtensionProvider: NamedDomainObjectProvider<MatrixExtension>) {
+  internal fun create(matrixExtensionProvider: NamedDomainObjectProvider<MatrixExtension>) {
     val matrixName = matrixExtensionProvider.name
 
     val taskNameStart = "matrixYaml${matrixName.capitalize()}"
@@ -93,10 +90,5 @@ public class MatrixTaskFactory @Inject constructor(
 
     // Automatically run `matrixYamlCheck` when running `check`
     target.tasks.named(LifecycleBasePlugin.CHECK_TASK_NAME).dependsOn(versionsMatrixYamlCheck)
-  }
-
-  private companion object {
-    @Serial
-    private const val serialVersionUID: Long = 8941788796331697558L
   }
 }

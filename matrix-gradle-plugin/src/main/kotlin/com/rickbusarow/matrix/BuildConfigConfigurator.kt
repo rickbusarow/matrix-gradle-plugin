@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,9 +27,10 @@ import org.gradle.api.provider.ProviderFactory
 import org.gradle.kotlin.dsl.buildConfigField
 import javax.inject.Inject
 
+@Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction")
 public open class BuildConfigConfigurator @Inject constructor(
   private val buildConfigExtension: BuildConfigExtension,
-  private val providerFactory: ProviderFactory
+  @Suppress("unused") private val providerFactory: ProviderFactory
 ) {
 
   public fun buildConfig(

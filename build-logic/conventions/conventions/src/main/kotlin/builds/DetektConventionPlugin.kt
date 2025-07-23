@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Rick Busarow
+ * Copyright (C) 2025 Rick Busarow
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,6 @@
 package builds
 
 import com.rickbusarow.kgx.applyOnce
-import com.rickbusarow.kgx.buildDir
 import com.rickbusarow.kgx.library
 import com.rickbusarow.kgx.libsCatalog
 import io.gitlab.arturbosch.detekt.Detekt
@@ -40,15 +39,16 @@ abstract class DetektConventionPlugin : Plugin<Project> {
       "**/build/**"
     )
 
-    target.tasks
-      .register("detektReportMerge", ReportMergeTask::class.java) { reportMergeTask ->
-        reportMergeTask.output
-          .set(target.rootProject.buildDir().resolve("reports/detekt/merged.sarif"))
+    val reportsDir = target.rootProject.layout.buildDirectory
+      .map { it.dir("reports/detekt") }
+    val configFile = target.rootProject.file("detekt/detekt-config.yml")
 
-        reportMergeTask.input.from(
-          target.tasks.withType(Detekt::class.java).map { it.sarifReportFile }
-        )
-      }
+    target.tasks.register("detektReportMerge", ReportMergeTask::class.java) { reportMergeTask ->
+      reportMergeTask.output.set(reportsDir.map { it.file("merged.sarif") })
+      reportMergeTask.input.from(
+        target.tasks.withType(Detekt::class.java).map { it.sarifReportFile }
+      )
+    }
 
     target.dependencies.add(
       "detektPlugins",
@@ -58,7 +58,7 @@ abstract class DetektConventionPlugin : Plugin<Project> {
     target.extensions.configure(DetektExtension::class.java) { extension ->
 
       extension.autoCorrect = false
-      extension.config.from("${target.rootDir}/detekt/detekt-config.yml")
+      extension.config.from(configFile)
       extension.buildUponDefaultConfig = true
 
       extension.source.from(
@@ -75,7 +75,7 @@ abstract class DetektConventionPlugin : Plugin<Project> {
 
       task.autoCorrect = false
       task.parallel = true
-      task.config.from(target.files("${target.rootDir}/detekt/detekt-config.yml"))
+      task.config.from(configFile)
       task.buildUponDefaultConfig = true
 
       task.reports {
@@ -91,7 +91,7 @@ abstract class DetektConventionPlugin : Plugin<Project> {
       }
 
       // https://github.com/detekt/detekt/issues/4127
-      task.exclude { "/build/generated/" in it.file.absolutePath }
+      task.exclude { it.file.startsWith(target.layout.buildDirectory.dir("generated").get().asFile) }
 
       task.dependsOn(target.tasks.withType(BuildCodeGeneratorLogicTask::class.java))
     }
@@ -121,6 +121,7 @@ abstract class DetektConventionPlugin : Plugin<Project> {
     withAutoCorrect: Boolean
   ): TaskCollection<Detekt> {
     return tasks.withType(Detekt::class.java)
-      .matching { it.autoCorrect == withAutoCorrect && it != targetTask }
+      .named { it != targetTask.name }
+      .matching { it.autoCorrect == withAutoCorrect }
   }
 }
