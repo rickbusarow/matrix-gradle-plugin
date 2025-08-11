@@ -4,7 +4,7 @@ com.squareup:kotlinpoet-jvm:1.16.0
 com.squareup:kotlinpoet:1.16.0
 dev.drewhamilton.poko:poko-annotations-jvm:0.15.2
 dev.drewhamilton.poko:poko-annotations:0.15.2
-io.github.java-diff-utils:java-diff-utils:4.12
+io.github.java-diff-utils:java-diff-utils:4.16
 org.jetbrains.kotlin:kotlin-reflect:1.9.22
 org.jetbrains.kotlin:kotlin-stdlib:1.9.22
 org.jetbrains:annotations:13.0
